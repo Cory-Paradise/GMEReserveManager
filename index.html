@@ -5,140 +5,94 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Upcoming Game Releases</title>
   <style>
-    :root {
-      --bg: #0b0f14;
-      --panel: #121826;
-      --muted: #9aa4b2;
-      --text: #e6edf3;
-      --accent: #ff3b30;
-      --border: rgba(255,255,255,.08);
-      --chip: rgba(255,255,255,.06);
+    :root{
+      --bg:#0b0f14; --panel:#121826; --muted:#9aa4b2; --text:#e6edf3;
+      --accent:#ff3b30; --border:rgba(255,255,255,.10); --chip:rgba(255,255,255,.06);
+      --shadow:0 12px 34px rgba(0,0,0,.45);
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #070a10, var(--bg));
-      color: var(--text);
-    }
-    header {
-      padding: 20px 16px 10px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: rgba(11,15,20,.92);
-      backdrop-filter: blur(10px);
-      z-index: 10;
-    }
-    .wrap { max-width: 980px; margin: 0 auto; }
-    h1 { margin: 0 0 6px; font-size: 20px; letter-spacing: .2px; }
-    .sub { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:linear-gradient(180deg,#070a10,var(--bg));color:var(--text)}
+    header{padding:20px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;
+      background:rgba(11,15,20,.92);backdrop-filter:blur(10px);z-index:10}
+    .wrap{max-width:1150px;margin:0 auto}
+    h1{margin:0 0 6px;font-size:20px}
+    .sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+    .controls{display:grid;gap:10px;grid-template-columns:1fr 180px 190px;align-items:center}
+    @media(max-width:820px){.controls{grid-template-columns:1fr}}
+    input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+      background:var(--panel);color:var(--text);outline:none}
+    input::placeholder{color:rgba(154,164,178,.8)}
+    .tabs{display:flex;gap:8px;padding:14px 16px 0;flex-wrap:wrap}
+    .tab{padding:9px 12px;border-radius:999px;border:1px solid var(--border);
+      background:var(--chip);font-size:13px;cursor:pointer;user-select:none}
+    .tab.active{background:rgba(255,59,48,.18);border-color:rgba(255,59,48,.35)}
+    main{padding:14px 16px 30px}
 
-    .controls {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: 1fr 160px 160px;
-      align-items: center;
-    }
-    @media (max-width: 720px) {
-      .controls { grid-template-columns: 1fr; }
-    }
-    input, select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      outline: none;
-    }
-    input::placeholder { color: rgba(154,164,178,.8); }
+    /* Tiles */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+    @media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .tile{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border);
+      background:rgba(18,24,38,.75);box-shadow:var(--shadow);cursor:pointer}
+    .tile:active{transform:scale(.99)}
+    .cover{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;
+      background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02))}
+    .badge{position:absolute;top:10px;right:10px;padding:6px 10px;border-radius:999px;
+      font-size:11px;font-weight:700;background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
+    .info{padding:10px 10px 12px;display:grid;gap:6px}
+    .title{font-weight:700;font-size:13px;line-height:1.25;max-height:2.6em;overflow:hidden}
+    .meta{color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
+      border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:11px;white-space:nowrap}
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      padding: 14px 16px 0;
-      flex-wrap: wrap;
-    }
-    .tab {
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--chip);
-      color: var(--text);
-      font-size: 13px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .tab.active {
-      background: rgba(255,59,48,.18);
-      border-color: rgba(255,59,48,.35);
-    }
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.70);display:none;z-index:999}
+    .overlay.show{display:block}
+    .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:min(980px,calc(100vw - 24px));max-height:calc(100vh - 24px);
+      overflow:auto;border-radius:16px;border:1px solid var(--border);
+      background:rgba(18,24,38,.95);box-shadow:var(--shadow);display:none;z-index:1000}
+    .modal.show{display:block}
+    .modalHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 14px 10px;border-bottom:1px solid var(--border)}
+    .modalTitle{font-size:18px;font-weight:800;margin:0}
+    .closeBtn{border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);
+      border-radius:12px;padding:8px 10px;cursor:pointer;font-weight:700}
+    .modalBody{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;padding:14px}
+    @media(max-width:860px){.modalBody{grid-template-columns:1fr}}
 
-    main { padding: 14px 16px 30px; }
-    .card {
-      background: rgba(18,24,38,.75);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      margin: 10px 0;
-    }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 140px 120px;
-      gap: 10px;
-      align-items: center;
-    }
-    @media (max-width: 720px) {
-      .row { grid-template-columns: 1fr; }
-    }
-    .title { font-weight: 650; }
-    .meta { color: var(--muted); font-size: 13px; }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.04);
-      font-size: 12px;
-      width: fit-content;
-    }
-    .sys.ps { border-color: rgba(64,156,255,.35); }
-    .sys.xb { border-color: rgba(80,220,130,.35); }
-    .sys.sw { border-color: rgba(255,90,90,.35); }
-
-    .empty {
-      margin-top: 18px;
-      padding: 18px;
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      color: var(--muted);
-    }
-    footer {
-      padding: 14px 16px 30px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px solid var(--border);
-    }
-    .hint { color: rgba(154,164,178,.9); }
+    /* Gallery */
+    .heroWrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.03)}
+    .heroImg{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+    .thumbs{display:flex;gap:8px;flex-wrap:wrap;padding:10px}
+    .thumb{width:86px;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid var(--border);
+      cursor:pointer;opacity:.85}
+    .thumb.active{outline:2px solid rgba(255,59,48,.55);opacity:1}
+    .desc{color:rgba(230,237,243,.92);line-height:1.4;font-size:13px}
+    .kv{display:grid;gap:10px}
+    .kvBlock{border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.04);padding:12px}
+    .kvLabel{color:var(--muted);font-size:12px;margin-bottom:6px}
+    .kvValue{font-weight:750}
+    .platforms{display:flex;gap:8px;flex-wrap:wrap}
+    .empty{margin-top:18px;padding:18px;border:1px dashed var(--border);border-radius:14px;color:var(--muted)}
+    footer{padding:14px 16px 30px;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
+    code{color:rgba(230,237,243,.9)}
   </style>
 </head>
+
 <body>
   <header>
     <div class="wrap">
       <h1>Upcoming Releases</h1>
-      <p class="sub">Quick view for PlayStation, Xbox, and Switch — filter, search, and sort.</p>
+      <p class="sub">Tile view + details popup (release date, platforms, description, pictures).</p>
 
       <div class="controls">
-        <input id="search" placeholder="Search title (e.g., 'Mario', 'Assassin')…" />
+        <input id="search" placeholder="Search title (e.g., Mario, Assassin)..." />
         <select id="sort">
           <option value="dateAsc">Sort: Date (Soonest)</option>
           <option value="dateDesc">Sort: Date (Latest)</option>
           <option value="titleAsc">Sort: Title (A–Z)</option>
           <option value="titleDesc">Sort: Title (Z–A)</option>
-          <option value="systemAsc">Sort: System</option>
         </select>
         <select id="showPast">
           <option value="hide">Hide Past Releases</option>
@@ -147,143 +101,531 @@
       </div>
     </div>
 
-    <div class="tabs wrap" role="tablist" aria-label="System tabs">
-      <div class="tab active" data-filter="all" role="tab" aria-selected="true">All Systems</div>
-      <div class="tab" data-filter="ps" role="tab" aria-selected="false">PlayStation</div>
-      <div class="tab" data-filter="xb" role="tab" aria-selected="false">Xbox</div>
-      <div class="tab" data-filter="sw" role="tab" aria-selected="false">Switch</div>
+    <div class="tabs wrap">
+  <div class="tab active" data-filter="all">All Systems</div>
+  <div class="tab" data-filter="PlayStation">PlayStation</div>
+  <div class="tab" data-filter="Xbox">Xbox</div>
+  <div class="tab" data-filter="Switch">Switch</div>
+  <div class="tab" data-filter="PC">PC</div>
+  <div class="tab" data-filter="Mobile">Mobile</div>
+</div>
+
     </div>
   </header>
 
   <main class="wrap">
-    <div id="list"></div>
-    <div id="empty" class="empty" style="display:none;">
-      No games match your filters. Try clearing search or switching tabs.
-    </div>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">No games match your filters.</div>
   </main>
 
   <footer>
     <div class="wrap">
-      <div class="hint">
-        Tip: Edit the game list inside <strong>index.html</strong> under the <code>const games = [...]</code> section.
-        Use dates like <code>2026-03-15</code> for best sorting.
-      </div>
+      Tip: Put images in folders like <code>covers/</code> and <code>screens/</code> in your repo, then reference them in the <code>games</code> list.
     </div>
   </footer>
 
+  <!-- Modal -->
+  <div id="overlay" class="overlay"></div>
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modalHead">
+      <div>
+        <h2 id="mTitle" class="modalTitle"></h2>
+        <div id="mSub" class="meta" style="margin-top:6px;"></div>
+      </div>
+      <button id="closeBtn" class="closeBtn">Close</button>
+    </div>
+    <div class="modalBody">
+      <div>
+        <div class="heroWrap">
+          <img id="heroImg" class="heroImg" alt="Screenshot" />
+          <div id="thumbs" class="thumbs"></div>
+        </div>
+        <div style="height:12px"></div>
+        <div id="mDesc" class="desc"></div>
+      </div>
+
+      <div class="kv">
+        <div class="kvBlock">
+          <div class="kvLabel">Release date</div>
+          <div id="mDate" class="kvValue"></div>
+        </div>
+        <div class="kvBlock">
+          <div class="kvLabel">Platforms</div>
+          <div id="mPlatforms" class="platforms"></div>
+        </div>
+        <div class="kvBlock">
+          <div class="kvLabel">Notes (optional)</div>
+          <div id="mNote" class="desc"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ✅ EDIT YOUR GAMES HERE
-    // system: "ps" | "xb" | "sw"
-    // date format: YYYY-MM-DD
+    // platforms: ["PlayStation","Xbox","Switch"] any combo
+    // cover: cover image url/path
+    // screenshots: array of image urls/paths (1+ recommended)
     const games = [
-      { title: "Example Game A", system: "ps", date: "2026-02-14" },
-      { title: "Example Game B", system: "xb", date: "2026-03-01" },
-      { title: "Example Game C", system: "sw", date: "2026-01-25" },
-      { title: "Example Multiplatform", system: "ps", date: "2026-04-10", note: "Also on Xbox" },
+  {
+    title: "The 18th Attic",
+    date: "2026-02-02",
+    platforms: ["PC"],
+    cover: "covers/the-18th-attic.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Crimson Capes",
+    date: "2026-02-03",
+    platforms: ["PC"],
+    cover: "covers/crimson-capes.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Dragon Quest VII Reimagined",
+    date: "2026-02-05",
+    platforms: ["PlayStation", "Xbox", "Switch", "PC"],
+    cover: "covers/dragon-quest-vii-reimagined.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "Includes Switch 2"
+  },
+  {
+    title: "Unemployment Simulator 2018",
+    date: "2026-02-05",
+    platforms: ["PC"],
+    cover: "covers/unemployment-simulator-2018.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Dead Pets: A Punk Rock Slice Of Life Sim",
+    date: "2026-02-06",
+    platforms: ["PC"],
+    cover: "covers/dead-pets-a-punk-rock-slice-of-life-sim.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Ghost Gunners",
+    date: "2026-02-06",
+    platforms: ["PC"],
+    cover: "covers/ghost-gunners.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "HumanityZ",
+    date: "2026-02-06",
+    platforms: ["PC"],
+    cover: "covers/humanityz.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "My Hero Academia: All's Justice",
+    date: "2026-02-06",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/my-hero-academia-alls-justice.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Nioh 3",
+    date: "2026-02-06",
+    platforms: ["PlayStation"],
+    cover: "covers/nioh-3.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "PS5"
+  },
+  {
+    title: "Mewgenics",
+    date: "2026-02-10",
+    platforms: ["PC"],
+    cover: "covers/mewgenics.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Relooted",
+    date: "2026-02-10",
+    platforms: ["PC"],
+    cover: "covers/relooted.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "The Prisoning: Fletcher's Quest",
+    date: "2026-02-10",
+    platforms: ["Switch", "PC"],
+    cover: "covers/the-prisoning-fletchers-quest.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Romeo is a Dead Man",
+    date: "2026-02-11",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/romeo-is-a-dead-man.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "BlazBlue Entropy Effect X",
+    date: "2026-02-12",
+    platforms: ["PlayStation", "Xbox", "Switch"],
+    cover: "covers/blazblue-entropy-effect-x.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Disciples: Domination",
+    date: "2026-02-12",
+    platforms: ["PC"],
+    cover: "covers/disciples-domination.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Mario Tennis Fever",
+    date: "2026-02-12",
+    platforms: ["Switch"],
+    cover: "covers/mario-tennis-fever.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "Switch 2"
+  },
+  {
+    title: "Ride 6",
+    date: "2026-02-12",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/ride-6.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Clue: Murder by Death",
+    date: "2026-02-13",
+    platforms: ["PlayStation", "Xbox"],
+    cover: "covers/clue-murder-by-death.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "PS5/PS4 + Xbox Series/Xbox One"
+  },
+  {
+    title: "High on Life 2",
+    date: "2026-02-13",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/high-on-life-2.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Reanimal",
+    date: "2026-02-13",
+    platforms: ["PlayStation", "Xbox", "Switch", "PC"],
+    cover: "covers/reanimal.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "Includes Switch 2"
+  },
+  {
+    title: "Dobbel Dungeon",
+    date: "2026-02-16",
+    platforms: ["PC"],
+    cover: "covers/dobbel-dungeon.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Menherarium",
+    date: "2026-02-18",
+    platforms: ["PC"],
+    cover: "covers/menherarium.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Strange Brew",
+    date: "2026-02-18",
+    platforms: ["PC"],
+    cover: "covers/strange-brew.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "The Killing Stone",
+    date: "2026-02-18",
+    platforms: ["PC"],
+    cover: "covers/the-killing-stone.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Demon Tides",
+    date: "2026-02-19",
+    platforms: ["PC"],
+    cover: "covers/demon-tides.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Love Eternal",
+    date: "2026-02-19",
+    platforms: ["PlayStation", "Xbox", "Switch", "PC"],
+    cover: "covers/love-eternal.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Styx: Blades of Greed",
+    date: "2026-02-19",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/styx-blades-of-greed.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Ys X: Proud Nordics",
+    date: "2026-02-20",
+    platforms: ["PlayStation", "Switch", "PC"],
+    cover: "covers/ys-x-proud-nordics.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "Includes Switch 2"
+  },
+  {
+    title: "Rainbow Six Mobile",
+    date: "2026-02-23",
+    platforms: ["Mobile"],
+    cover: "covers/rainbow-six-mobile.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "iOS / Android"
+  },
+  {
+    title: "Tides of Tomorrow",
+    date: "2026-02-24",
+    platforms: ["PlayStation", "Xbox", "PC"],
+    cover: "covers/tides-of-tomorrow.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Reigns: The Witcher",
+    date: "2026-02-25",
+    platforms: ["PC", "Mobile"],
+    cover: "covers/reigns-the-witcher.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "iOS / Android"
+  },
+  {
+    title: "Tales of Berseria Remastered",
+    date: "2026-02-26",
+    platforms: ["PlayStation", "Xbox", "Switch", "PC"],
+    cover: "covers/tales-of-berseria-remastered.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: ""
+  },
+  {
+    title: "Resident Evil Requiem",
+    date: "2026-02-27",
+    platforms: ["PlayStation", "Xbox", "Switch", "PC"],
+    cover: "covers/resident-evil-requiem.jpg",
+    description: "Description coming soon.",
+    screenshots: [],
+    note: "Includes Switch 2"
+  }
+];
+
     ];
 
-    const systemName = (sys) => ({ ps: "PlayStation", xb: "Xbox", sw: "Switch" }[sys] || sys);
-    const systemClass = (sys) => ({ ps: "ps", xb: "xb", sw: "sw" }[sys] || "");
-
-    const listEl = document.getElementById("list");
+    const gridEl = document.getElementById("grid");
     const emptyEl = document.getElementById("empty");
     const searchEl = document.getElementById("search");
     const sortEl = document.getElementById("sort");
     const showPastEl = document.getElementById("showPast");
     const tabs = Array.from(document.querySelectorAll(".tab"));
 
+    const overlay = document.getElementById("overlay");
+    const modal = document.getElementById("modal");
+    const closeBtn = document.getElementById("closeBtn");
+
+    const mTitle = document.getElementById("mTitle");
+    const mSub = document.getElementById("mSub");
+    const mDesc = document.getElementById("mDesc");
+    const mDate = document.getElementById("mDate");
+    const mPlatforms = document.getElementById("mPlatforms");
+    const mNote = document.getElementById("mNote");
+    const heroImg = document.getElementById("heroImg");
+    const thumbs = document.getElementById("thumbs");
+
     let activeFilter = "all";
 
-    function parseDate(d) {
-      // interpret as local date for sorting
-      const [y,m,day] = d.split("-").map(Number);
-      return new Date(y, m - 1, day);
+    function parseDate(d){
+      const [y,m,day]=d.split("-").map(Number);
+      return new Date(y,m-1,day);
     }
-
-    function formatDate(d) {
-      const dt = parseDate(d);
-      return dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    function formatDateLong(d){
+      return parseDate(d).toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
     }
-
-    function isPast(d) {
-      const today = new Date();
-      today.setHours(0,0,0,0);
+    function formatDateShort(d){
+      return parseDate(d).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+    }
+    function isPast(d){
+      const today=new Date(); today.setHours(0,0,0,0);
       return parseDate(d) < today;
     }
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g,(m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+      }[m]));
+    }
 
-    function render() {
+    function render(){
       const q = searchEl.value.trim().toLowerCase();
       const showPast = showPastEl.value === "show";
 
       let filtered = games.slice();
 
-      // filter by tab/system
-      if (activeFilter !== "all") {
-        filtered = filtered.filter(g => g.system === activeFilter);
+      // Tab filter: show games that include the platform
+      if(activeFilter !== "all"){
+        filtered = filtered.filter(g => (g.platforms || []).includes(activeFilter));
       }
 
-      // hide past releases (default)
-      if (!showPast) {
+      // Past toggle
+      if(!showPast){
         filtered = filtered.filter(g => !isPast(g.date));
       }
 
-      // search
-      if (q) {
+      // Search
+      if(q){
         filtered = filtered.filter(g => (g.title || "").toLowerCase().includes(q));
       }
 
-      // sort
+      // Sort
       const sort = sortEl.value;
-      filtered.sort((a,b) => {
-        if (sort === "dateAsc") return parseDate(a.date) - parseDate(b.date);
-        if (sort === "dateDesc") return parseDate(b.date) - parseDate(a.date);
-        if (sort === "titleAsc") return (a.title || "").localeCompare(b.title || "");
-        if (sort === "titleDesc") return (b.title || "").localeCompare(a.title || "");
-        if (sort === "systemAsc") return systemName(a.system).localeCompare(systemName(b.system));
+      filtered.sort((a,b)=>{
+        if(sort==="dateAsc") return parseDate(a.date)-parseDate(b.date);
+        if(sort==="dateDesc") return parseDate(b.date)-parseDate(a.date);
+        if(sort==="titleAsc") return (a.title||"").localeCompare(b.title||"");
+        if(sort==="titleDesc") return (b.title||"").localeCompare(a.title||"");
         return 0;
       });
 
-      listEl.innerHTML = "";
-
-      if (filtered.length === 0) {
-        emptyEl.style.display = "block";
+      gridEl.innerHTML = "";
+      if(filtered.length === 0){
+        emptyEl.style.display="block";
         return;
       }
-      emptyEl.style.display = "none";
+      emptyEl.style.display="none";
 
-      for (const g of filtered) {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const sysPill = `
-          <span class="pill sys ${systemClass(g.system)}">
-            ${systemName(g.system)}
-          </span>
-        `;
-
-        const note = g.note ? `<div class="meta">Note: ${g.note}</div>` : "";
-
-        card.innerHTML = `
-          <div class="row">
-            <div>
-              <div class="title">${g.title}</div>
-              <div class="meta">${formatDate(g.date)}${isPast(g.date) ? " • (past)" : ""}</div>
-              ${note}
-            </div>
-            <div>${sysPill}</div>
-            <div class="meta" style="text-align:right;">
-              ${new Date(g.date).toLocaleDateString(undefined, { weekday: "short" })}
+      filtered.forEach((g, idx)=>{
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        tile.innerHTML = `
+          <img class="cover" src="${escapeHtml(g.cover || "")}" alt="${escapeHtml(g.title)} cover"
+            onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<div class=\\'cover\\' style=\\'display:grid;place-items:center;padding:16px;color:rgba(230,237,243,.85)\\'>No cover image</div>');">
+          <div class="badge">${escapeHtml(formatDateShort(g.date))}</div>
+          <div class="info">
+            <div class="title">${escapeHtml(g.title)}</div>
+            <div class="meta">
+              <span class="pill">${escapeHtml((g.platforms||[]).join(" / ") || "—")}</span>
+              <span>${parseDate(g.date).toLocaleDateString(undefined,{weekday:"short"})}</span>
             </div>
           </div>
         `;
-        listEl.appendChild(card);
-      }
+        tile.addEventListener("click", ()=>openModal(g));
+        gridEl.appendChild(tile);
+      });
     }
 
+    function openModal(g){
+      mTitle.textContent = g.title || "";
+      mSub.textContent = (g.platforms || []).join(" / ") + " • " + formatDateLong(g.date);
+      mDesc.textContent = g.description || "";
+      mDate.textContent = formatDateLong(g.date);
+
+      // Platforms chips
+      mPlatforms.innerHTML = "";
+      (g.platforms || []).forEach(p=>{
+        const chip = document.createElement("span");
+        chip.className = "pill";
+        chip.textContent = p;
+        mPlatforms.appendChild(chip);
+      });
+
+      // Note
+      mNote.textContent = g.note ? g.note : "—";
+
+      // Gallery
+      const pics = (g.screenshots && g.screenshots.length) ? g.screenshots : [g.cover].filter(Boolean);
+      thumbs.innerHTML = "";
+
+      let activePic = 0;
+      function setHero(i){
+        activePic = i;
+        heroImg.src = pics[i] || "";
+        Array.from(thumbs.children).forEach((t, idx)=>t.classList.toggle("active", idx===i));
+      }
+
+      pics.forEach((src, i)=>{
+        const t = document.createElement("img");
+        t.className = "thumb" + (i===0 ? " active" : "");
+        t.src = src;
+        t.alt = "Screenshot " + (i+1);
+        t.loading = "lazy";
+        t.addEventListener("click", (e)=>{ e.stopPropagation(); setHero(i); });
+        thumbs.appendChild(t);
+      });
+
+      setHero(0);
+
+      overlay.classList.add("show");
+      modal.classList.add("show");
+    }
+
+    function closeModal(){
+      overlay.classList.remove("show");
+      modal.classList.remove("show");
+    }
+
+    overlay.addEventListener("click", closeModal);
+    closeBtn.addEventListener("click", closeModal);
+    document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeModal(); });
+
     // Tabs
-    tabs.forEach(t => {
-      t.addEventListener("click", () => {
-        tabs.forEach(x => x.classList.remove("active"));
+    tabs.forEach(t=>{
+      t.addEventListener("click", ()=>{
+        tabs.forEach(x=>x.classList.remove("active"));
         t.classList.add("active");
         activeFilter = t.dataset.filter;
         render();
