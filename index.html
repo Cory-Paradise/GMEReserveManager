@@ -42,16 +42,20 @@
       border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
     .info{padding:10px 10px 12px;display:grid;gap:6px}
     .title{font-weight:700;font-size:13px;line-height:1.25;max-height:2.6em;overflow:hidden}
-    .meta{
+    
+.meta{
   color:var(--muted);
   font-size:12px;
-  display:flex;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns: 1fr auto; /* left takes remaining space, right stays tight */
   gap:8px;
   align-items:center;
-  flex-wrap:nowrap;
 }
-    .pill{
+.meta > :last-child{
+  white-space:nowrap;
+}
+    
+.pill{
   display:inline-flex;
   align-items:center;
   gap:6px;
@@ -60,10 +64,12 @@
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
   font-size:11px;
-  white-space:nowrap;
+
+  min-width:0;              /* IMPORTANT: allows shrinking inside grid/flex */
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
     /* Modal */
@@ -658,5 +664,6 @@
   </script>
 </body>
 </html>
+
 
 
