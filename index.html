@@ -40,16 +40,33 @@
     .badge{position:absolute;top:10px;right:10px;padding:6px 10px;border-radius:999px;
       font-size:11px;font-weight:700;background:rgba(0,0,0,.55);
       border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
-    .info{padding:10px 10px 12px;display:grid;gap:6px}
-    .title{font-weight:700;font-size:13px;line-height:1.25;max-height:2.6em;overflow:hidden}
+  .info{
+  padding:10px 10px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  height:100%;
+}
+    
+.title{
+  font-weight:700;
+  font-size:13px;
+  line-height:1.25;
+  max-height:2.5em;       /* exactly 2 lines */
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+}
     
 .meta{
   color:var(--muted);
   font-size:12px;
-  display:grid;
-  grid-template-columns: 1fr auto; /* left takes remaining space, right stays tight */
+  display:flex;
+  justify-content:space-between;
   gap:8px;
   align-items:center;
+  margin-top:auto;   /* 👈 THIS pushes it to the bottom */
 }
 .meta > :last-child{
   white-space:nowrap;
@@ -64,12 +81,10 @@
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
   font-size:11px;
-
-  min-width:0;              /* IMPORTANT: allows shrinking inside grid/flex */
+  white-space:nowrap;
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
-  white-space:nowrap;
 }
 
     /* Modal */
@@ -664,6 +679,7 @@
   </script>
 </body>
 </html>
+
 
 
 
