@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Upcoming Game Releases</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121826;
+      --muted: #9aa4b2;
+      --text: #e6edf3;
+      --accent: #ff3b30;
+      --border: rgba(255,255,255,.08);
+      --chip: rgba(255,255,255,.06);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #070a10, var(--bg));
+      color: var(--text);
+    }
+    header {
+      padding: 20px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(11,15,20,.92);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; font-size: 20px; letter-spacing: .2px; }
+    .sub { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 160px 160px;
+      align-items: center;
+    }
+    @media (max-width: 720px) {
+      .controls { grid-template-columns: 1fr; }
+    }
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      outline: none;
+    }
+    input::placeholder { color: rgba(154,164,178,.8); }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 14px 16px 0;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--chip);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .tab.active {
+      background: rgba(255,59,48,.18);
+      border-color: rgba(255,59,48,.35);
+    }
+
+    main { padding: 14px 16px 30px; }
+    .card {
+      background: rgba(18,24,38,.75);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      margin: 10px 0;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 140px 120px;
+      gap: 10px;
+      align-items: center;
+    }
+    @media (max-width: 720px) {
+      .row { grid-template-columns: 1fr; }
+    }
+    .title { font-weight: 650; }
+    .meta { color: var(--muted); font-size: 13px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      font-size: 12px;
+      width: fit-content;
+    }
+    .sys.ps { border-color: rgba(64,156,255,.35); }
+    .sys.xb { border-color: rgba(80,220,130,.35); }
+    .sys.sw { border-color: rgba(255,90,90,.35); }
+
+    .empty {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+    }
+    footer {
+      padding: 14px 16px 30px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .hint { color: rgba(154,164,178,.9); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Upcoming Releases</h1>
+      <p class="sub">Quick view for PlayStation, Xbox, and Switch — filter, search, and sort.</p>
+
+      <div class="controls">
+        <input id="search" placeholder="Search title (e.g., 'Mario', 'Assassin')…" />
+        <select id="sort">
+          <option value="dateAsc">Sort: Date (Soonest)</option>
+          <option value="dateDesc">Sort: Date (Latest)</option>
+          <option value="titleAsc">Sort: Title (A–Z)</option>
+          <option value="titleDesc">Sort: Title (Z–A)</option>
+          <option value="systemAsc">Sort: System</option>
+        </select>
+        <select id="showPast">
+          <option value="hide">Hide Past Releases</option>
+          <option value="show">Show Past Releases</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tabs wrap" role="tablist" aria-label="System tabs">
+      <div class="tab active" data-filter="all" role="tab" aria-selected="true">All Systems</div>
+      <div class="tab" data-filter="ps" role="tab" aria-selected="false">PlayStation</div>
+      <div class="tab" data-filter="xb" role="tab" aria-selected="false">Xbox</div>
+      <div class="tab" data-filter="sw" role="tab" aria-selected="false">Switch</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="list"></div>
+    <div id="empty" class="empty" style="display:none;">
+      No games match your filters. Try clearing search or switching tabs.
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="hint">
+        Tip: Edit the game list inside <strong>index.html</strong> under the <code>const games = [...]</code> section.
+        Use dates like <code>2026-03-15</code> for best sorting.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ✅ EDIT YOUR GAMES HERE
+    // system: "ps" | "xb" | "sw"
+    // date format: YYYY-MM-DD
+    const games = [
+      { title: "Example Game A", system: "ps", date: "2026-02-14" },
+      { title: "Example Game B", system: "xb", date: "2026-03-01" },
+      { title: "Example Game C", system: "sw", date: "2026-01-25" },
+      { title: "Example Multiplatform", system: "ps", date: "2026-04-10", note: "Also on Xbox" },
+    ];
+
+    const systemName = (sys) => ({ ps: "PlayStation", xb: "Xbox", sw: "Switch" }[sys] || sys);
+    const systemClass = (sys) => ({ ps: "ps", xb: "xb", sw: "sw" }[sys] || "");
+
+    const listEl = document.getElementById("list");
+    const emptyEl = document.getElementById("empty");
+    const searchEl = document.getElementById("search");
+    const sortEl = document.getElementById("sort");
+    const showPastEl = document.getElementById("showPast");
+    const tabs = Array.from(document.querySelectorAll(".tab"));
+
+    let activeFilter = "all";
+
+    function parseDate(d) {
+      // interpret as local date for sorting
+      const [y,m,day] = d.split("-").map(Number);
+      return new Date(y, m - 1, day);
+    }
+
+    function formatDate(d) {
+      const dt = parseDate(d);
+      return dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function isPast(d) {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      return parseDate(d) < today;
+    }
+
+    function render() {
+      const q = searchEl.value.trim().toLowerCase();
+      const showPast = showPastEl.value === "show";
+
+      let filtered = games.slice();
+
+      // filter by tab/system
+      if (activeFilter !== "all") {
+        filtered = filtered.filter(g => g.system === activeFilter);
+      }
+
+      // hide past releases (default)
+      if (!showPast) {
+        filtered = filtered.filter(g => !isPast(g.date));
+      }
+
+      // search
+      if (q) {
+        filtered = filtered.filter(g => (g.title || "").toLowerCase().includes(q));
+      }
+
+      // sort
+      const sort = sortEl.value;
+      filtered.sort((a,b) => {
+        if (sort === "dateAsc") return parseDate(a.date) - parseDate(b.date);
+        if (sort === "dateDesc") return parseDate(b.date) - parseDate(a.date);
+        if (sort === "titleAsc") return (a.title || "").localeCompare(b.title || "");
+        if (sort === "titleDesc") return (b.title || "").localeCompare(a.title || "");
+        if (sort === "systemAsc") return systemName(a.system).localeCompare(systemName(b.system));
+        return 0;
+      });
+
+      listEl.innerHTML = "";
+
+      if (filtered.length === 0) {
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
+
+      for (const g of filtered) {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const sysPill = `
+          <span class="pill sys ${systemClass(g.system)}">
+            ${systemName(g.system)}
+          </span>
+        `;
+
+        const note = g.note ? `<div class="meta">Note: ${g.note}</div>` : "";
+
+        card.innerHTML = `
+          <div class="row">
+            <div>
+              <div class="title">${g.title}</div>
+              <div class="meta">${formatDate(g.date)}${isPast(g.date) ? " • (past)" : ""}</div>
+              ${note}
+            </div>
+            <div>${sysPill}</div>
+            <div class="meta" style="text-align:right;">
+              ${new Date(g.date).toLocaleDateString(undefined, { weekday: "short" })}
+            </div>
+          </div>
+        `;
+        listEl.appendChild(card);
+      }
+    }
+
+    // Tabs
+    tabs.forEach(t => {
+      t.addEventListener("click", () => {
+        tabs.forEach(x => x.classList.remove("active"));
+        t.classList.add("active");
+        activeFilter = t.dataset.filter;
+        render();
+      });
+    });
+
+    // Controls
+    searchEl.addEventListener("input", render);
+    sortEl.addEventListener("change", render);
+    showPastEl.addEventListener("change", render);
+
+    render();
+  </script>
+</body>
+</html>
