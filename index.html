@@ -42,9 +42,29 @@
       border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
     .info{padding:10px 10px 12px;display:grid;gap:6px}
     .title{font-weight:700;font-size:13px;line-height:1.25;max-height:2.6em;overflow:hidden}
-    .meta{color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:8px;align-items:center}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;
-      border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:11px;white-space:nowrap}
+    .meta{
+  color:var(--muted);
+  font-size:12px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+  flex-wrap:nowrap;
+}
+    .pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 9px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  font-size:11px;
+  white-space:nowrap;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
     /* Modal */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.70);display:none;z-index:999}
@@ -638,4 +658,5 @@
   </script>
 </body>
 </html>
+
 
