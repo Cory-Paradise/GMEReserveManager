@@ -35,6 +35,46 @@ header{
   will-change: transform;
 }
 
+/* PROMO */
+.promo{
+  background:linear-gradient(90deg,#ff3b30,#ff6b5e);
+  color:#fff;
+  font-weight:800;
+  font-size:14px;
+  padding:10px 16px;
+  text-align:center;
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+/* Header behavior */
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(11,15,20,.92);
+  backdrop-filter:blur(10px);
+  transition:padding .2s ease;
+}
+
+/* Collapsible area */
+.headerContent{
+  transition:
+    max-height .25s ease,
+    opacity .2s ease,
+    transform .25s ease;
+  overflow:hidden;
+}
+
+/* When scrolling down */
+header.compact .headerContent{
+  max-height:0;
+  opacity:0;
+  transform:translateY(-8px);
+  pointer-events:none;
+}
+
 header.hide {
   transform: translateY(-100%);
 }
@@ -245,14 +285,18 @@ header.compact .sub{
 </head>
 
 <body>
-  <header>
+<header>
+  <!-- PROMO BANNER (always visible) -->
+  <div id="promoBanner" class="promo">
+    <span id="promoText"></span>
+  </div>
+
+  <!-- COLLAPSIBLE CONTENT -->
+  <div class="headerContent">
     <div class="wrap">
       <h1>Upcoming Releases</h1>
       <p class="sub">Tile view + details popup (release date, platforms, description, pictures).</p>
-<div class="promoBar" aria-label="Store promotions">
-  <div class="promoTag">Promo</div>
-  <div id="promoText" class="promoText"></div>
-</div>
+
       <div class="controls">
         <input id="search" placeholder="Search title (e.g., Mario, Assassin)..." />
         <select id="sort">
@@ -268,14 +312,17 @@ header.compact .sub{
       </div>
     </div>
 
-<div class="tabs wrap">
-  <div class="tab active" data-filter="all">All Systems</div>
-  <div class="tab" data-filter="PlayStation">PlayStation</div>
-  <div class="tab" data-filter="Xbox">Xbox</div>
-  <div class="tab" data-filter="Switch">Switch</div>
-</div>
-  </header>
+    <div class="tabs wrap">
+      <div class="tab active" data-filter="all">All Systems</div>
+      <div class="tab" data-filter="PlayStation">PlayStation</div>
+      <div class="tab" data-filter="Xbox">Xbox</div>
+      <div class="tab" data-filter="Switch">Switch</div>
+    </div>
+  </div>
+</header>
 
+
+  
   <main class="wrap">
     <div id="grid" class="grid"></div>
     <div id="empty" class="empty" style="display:none;">No games match your filters.</div>
@@ -574,6 +621,22 @@ header.compact .sub{
     const showPastEl = document.getElementById("showPast");
     const tabs = Array.from(document.querySelectorAll(".tab"));
 
+const headerEl = document.querySelector("header");
+let lastScrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+
+  // Collapse controls after small scroll
+  if (y > 100) {
+    headerEl.classList.add("compact");
+  } else {
+    headerEl.classList.remove("compact");
+  }
+
+  lastScrollY = y;
+}, { passive: true });
+
 // Rotating promo banner (5s)
 const promos = [
   "Trade in any games towards a new preorder and get 20% Extra Credit!!",
@@ -787,6 +850,7 @@ window.addEventListener("scroll", () => {
   </script>
 </body>
 </html>
+
 
 
 
