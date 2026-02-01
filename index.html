@@ -29,6 +29,31 @@
     .tab.active{background:rgba(255,59,48,.18);border-color:rgba(255,59,48,.35)}
     main{padding:14px 16px 30px}
 
+/* --- Header auto-hide / compact --- */
+header{
+  transition: transform .22s ease, padding .22s ease;
+  will-change: transform;
+}
+
+header.hide {
+  transform: translateY(-100%);
+}
+
+/* Optional: instead of fully hiding, use "compact" mode */
+header.compact{
+  padding: 8px 16px 8px;
+}
+
+/* Hide the tabs row in compact mode (optional) */
+header.compact .tabs{
+  display:none;
+}
+
+/* Make controls tighter in compact mode */
+header.compact .sub{
+  display:none;
+}
+    
     /* Tiles */
     .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
     @media(max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -578,7 +603,23 @@ setInterval(()=>{
   promoIndex = (promoIndex + 1) % promos.length;
   setPromo(promoIndex);
 }, 5000);
-  
+
+// --- Header behavior on scroll ---
+const headerEl = document.querySelector("header");
+let lastY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+
+  // If you want FULL hide on scroll down:
+  // headerEl.classList.toggle("hide", y > lastY && y > 120);
+
+  // If you want COMPACT mode on scroll down (recommended):
+  headerEl.classList.toggle("compact", y > 120);
+
+  lastY = y;
+}, { passive: true });
+    
     const overlay = document.getElementById("overlay");
     const modal = document.getElementById("modal");
     const closeBtn = document.getElementById("closeBtn");
@@ -746,6 +787,7 @@ setInterval(()=>{
   </script>
 </body>
 </html>
+
 
 
 
