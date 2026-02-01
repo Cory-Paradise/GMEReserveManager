@@ -99,7 +99,7 @@
   font-size:11px;
 
   /* NEW: prevent long platform lists from breaking layout */
-  white-space:nowrap;
+  white-space:normal;
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -137,6 +137,85 @@
     .empty{margin-top:18px;padding:18px;border:1px dashed var(--border);border-radius:14px;color:var(--muted)}
     footer{padding:14px 16px 30px;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
     code{color:rgba(230,237,243,.9)}
+/* Rotating promo banner */
+.promoBar{
+  margin:10px 0 12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(90deg, rgba(255,59,48,.18), rgba(255,255,255,.06));
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+
+.promoTag{
+  flex:0 0 auto;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.35);
+}
+
+.promoText{
+  font-size:13px;
+  font-weight:750;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  min-width:0;
+}
+
+/* Smooth fade between promos */
+.promoFadeOut{ opacity:0; transform:translateY(-2px); transition:opacity .25s ease, transform .25s ease; }
+.promoFadeIn{ opacity:1; transform:translateY(0); transition:opacity .25s ease, transform .25s ease; }
+/* Rotating promo banner */
+.promoBar{
+  margin:10px 0 12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(90deg, rgba(255,59,48,.18), rgba(255,255,255,.06));
+  box-shadow:0 10px 26px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+
+.promoTag{
+  flex:0 0 auto;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.35);
+}
+
+.promoText{
+  font-size:13px;
+  font-weight:750;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  min-width:0;
+}
+
+/* Smooth fade between promos */
+.promoFadeOut{ opacity:0; transform:translateY(-2px); transition:opacity .25s ease, transform .25s ease; }
+.promoFadeIn{ opacity:1; transform:translateY(0); transition:opacity .25s ease, transform .25s ease; }
+
   </style>
 </head>
 
@@ -145,7 +224,10 @@
     <div class="wrap">
       <h1>Upcoming Releases</h1>
       <p class="sub">Tile view + details popup (release date, platforms, description, pictures).</p>
-
+<div class="promoBar" aria-label="Store promotions">
+  <div class="promoTag">Promo</div>
+  <div id="promoText" class="promoText"></div>
+</div>
       <div class="controls">
         <input id="search" placeholder="Search title (e.g., Mario, Assassin)..." />
         <select id="sort">
@@ -404,6 +486,36 @@
     const showPastEl = document.getElementById("showPast");
     const tabs = Array.from(document.querySelectorAll(".tab"));
 
+// Rotating promo banner (5s)
+const promos = [
+  "Trade in any games towards a new preorder and get 20% Extra Credit!!",
+  "Buy a new Game and get $10 off a Pro Membership!!",
+  "Pre-order Resident Evil Requiem today!!",
+  "Pre-order Ascended Heroes ETB Today!!"
+];
+
+const promoTextEl = document.getElementById("promoText");
+let promoIndex = 0;
+
+function setPromo(i){
+  if(!promoTextEl) return;
+  promoTextEl.classList.remove("promoFadeIn");
+  promoTextEl.classList.add("promoFadeOut");
+
+  setTimeout(()=>{
+    promoTextEl.textContent = promos[i];
+    promoTextEl.classList.remove("promoFadeOut");
+    promoTextEl.classList.add("promoFadeIn");
+  }, 220);
+}
+
+// Initialize + rotate
+setPromo(promoIndex);
+setInterval(()=>{
+  promoIndex = (promoIndex + 1) % promos.length;
+  setPromo(promoIndex);
+}, 5000);
+  
     const overlay = document.getElementById("overlay");
     const modal = document.getElementById("modal");
     const closeBtn = document.getElementById("closeBtn");
@@ -571,6 +683,7 @@
   </script>
 </body>
 </html>
+
 
 
 
