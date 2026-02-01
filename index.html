@@ -620,9 +620,19 @@ header.compact .sub{
     const sortEl = document.getElementById("sort");
     const showPastEl = document.getElementById("showPast");
     const tabs = Array.from(document.querySelectorAll(".tab"));
-
+// --- Header compact on scroll (keeps promo visible) ---
 const headerEl = document.querySelector("header");
-let lastScrollY = window.scrollY;
+
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
+
+  // Compact mode after you scroll a bit
+  headerEl.classList.toggle("compact", y > 120);
+
+  // If you ever want FULL hide instead, uncomment this and add the CSS you already have:
+  // headerEl.classList.toggle("hide", y > 120 && y > lastY);
+
+}, { passive: true });
 
 window.addEventListener("scroll", () => {
   const y = window.scrollY;
@@ -668,7 +678,7 @@ setInterval(()=>{
 }, 5000);
 
 // --- Header behavior on scroll ---
-const headerEl = document.querySelector("header");
+
 let lastY = window.scrollY;
 
 window.addEventListener("scroll", () => {
@@ -850,6 +860,7 @@ window.addEventListener("scroll", () => {
   </script>
 </body>
 </html>
+
 
 
 
