@@ -161,15 +161,12 @@
       </div>
     </div>
 
-    <div class="tabs wrap">
+<div class="tabs wrap">
   <div class="tab active" data-filter="all">All Systems</div>
   <div class="tab" data-filter="PlayStation">PlayStation</div>
   <div class="tab" data-filter="Xbox">Xbox</div>
   <div class="tab" data-filter="Switch">Switch</div>
-  <div class="tab" data-filter="PC">PC</div>
-  <div class="tab" data-filter="Mobile">Mobile</div>
-
-    </div>
+</div>
   </header>
 
   <main class="wrap">
@@ -571,7 +568,8 @@
       const q = searchEl.value.trim().toLowerCase();
       const showPast = showPastEl.value === "show";
 
-      let filtered = games.slice();
+      let filtered = games.filter(g => !(g.platforms || []).includes("PC") && !(g.platforms || []).includes("Mobile"));
+
 
       // Tab filter: show games that include the platform
       if(activeFilter !== "all"){
@@ -614,10 +612,10 @@
           <div class="badge">${escapeHtml(formatDateShort(g.date))}</div>
           <div class="info">
             <div class="title">${escapeHtml(g.title)}</div>
-            <div class="meta">
-              <span class="pill">${escapeHtml((g.platforms||[]).join(" / ") || "—")}</span>
-              <span>${parseDate(g.date).toLocaleDateString(undefined,{weekday:"short"})}</span>
-            </div>
+<div class="meta">
+  <span class="pill">${escapeHtml((g.platforms||[]).join(" / ") || "—")}</span>
+</div>
+
           </div>
         `;
         tile.addEventListener("click", ()=>openModal(g));
@@ -698,6 +696,7 @@
   </script>
 </body>
 </html>
+
 
 
 
